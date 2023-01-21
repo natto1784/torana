@@ -1,0 +1,28 @@
+name: torana
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+      - name: Install nix
+        uses: cachix/install-nix-action@v18
+      - name: Check formatting
+        run: nix develop -c cargo fmt --check
+      - name: Set up cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ matrix.os }}-torana-${{ hashFiles('**/Cargo.lock') }}
+      - name: Build
+        run: nix develop -c cargo build --release
