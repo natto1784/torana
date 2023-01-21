@@ -26,15 +26,17 @@
       in rec {
         devShell = with pkgs;
           mkShell {
-            nativeBuildInputs = [
-              cmake
-              openssl
-              fontconfig
-              pkg-config
-              llvmPackages.lld
-              rust-analyzer
-              toolchain
-            ];
+            nativeBuildInputs =
+              [
+                cmake
+                openssl
+                fontconfig
+                pkg-config
+                rust-analyzer
+                toolchain
+              ]
+              ++ lib.optionals (with stdenv.hostPlatform; (isx86 || isi686 || isAarch64) && isLinux) [llvmPackages.lld]
+              ++ lib.optionals stdenv.hostPlatform.isDarwin [darwin.apple_sdk.frameworks.Cocoa];
           };
 
         formatter = pkgs.alejandra;
