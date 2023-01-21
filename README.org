@@ -1,0 +1,19 @@
+#+OPTIONS: toc:nil
+
+NOTE: This does not at all work yet, and is not even actively WIP. This is just my attempt at learning wgpu and get some experience in Rust and programming graphics in general. Additionally, this is obviously inspired by 東方Project.
+-----
+
+This will start as a standalone game with it's own library written using wgpu.
+This is supposed to be split into a standalone danmaku engine library at some point.
+
+* Current Objectives
+- Render "something"
+- Move "it"
+- Add multiple "entities"
+- Sprite rendering
+- Implement hitboxes
+
+* Later Objectives
+- Add own artwork
+- Add own music
+- Clean up everything
