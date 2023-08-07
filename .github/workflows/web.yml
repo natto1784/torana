@@ -1,5 +1,13 @@
-name: torana
-on: [push, pull_request, workflow_dispatch]
+name: toranaWeb
+on:
+  workflow_run:
+    workflows: ["torana"]
+    types:
+      - completed
+  workflow_dispatch:
+
+env:
+  OUT_LINK: toranaWeb
 
 jobs:
   build:
@@ -11,22 +19,18 @@ jobs:
           extra_nix_config: |
             auto-optimise-store = true
             experimental-features = nix-command flakes
+
       - uses: cachix/cachix-action@v12
         with:
           name: pain
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - name: fmt checks
-        run: nix build .#checks.fmt -L
-
-      - name: clippy checks
-        run: nix build .#checks.clippy -L
-        
-      - name: nextest checks
-        run: nix build .#checks.nextest -L
-
-      - name: doc checks
-        run: nix build .#checks.doc -L
-
       - name: build
-        run: nix build .#torana -L
+        run: nix build .#toranaWeb --out-link $OUT_LINK -L
+
+      - name: wasm-bindgen
+        run: >
+          nix develop .#toranaWeb
+          -c wasm-bindgen
+          --target web $OUT_LINK/bin/torana.wasm
+          --out-dir www
