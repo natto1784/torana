@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  OUT_LINK: toranaWeb
+  OUT_LINK: torana-web
 
 jobs:
   build:
@@ -25,12 +25,21 @@ jobs:
           name: pain
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
+      - name: fmt checks
+        run: nix build .#torana-web-fmt -L
+
+      - name: clippy checks
+        run: nix build .#torana-web-clippy -L
+        
+      - name: doc checks
+        run: nix build .#torana-web-doc -L
+
       - name: build
-        run: nix build .#toranaWeb --out-link $OUT_LINK -L
+        run: nix build .#torana-web --out-link $OUT_LINK -L
 
       - name: wasm-bindgen
         run: >
-          nix develop .#toranaWeb
+          nix develop .#torana-web
           -c wasm-bindgen
           --target web $OUT_LINK/bin/torana.wasm
           --out-dir www

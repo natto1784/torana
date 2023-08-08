@@ -17,16 +17,16 @@ jobs:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: fmt checks
-        run: nix build .#checks.fmt -L
+        run: nix build .#torana-fmt -L
 
       - name: clippy checks
-        run: nix build .#checks.clippy -L
+        run: nix build .#torana-clippy -L
         
       - name: nextest checks
-        run: nix build .#checks.nextest -L
+        run: nix build .#torana-nextest -L
 
       - name: doc checks
-        run: nix build .#checks.doc -L
+        run: nix build .#torana-doc -L
 
       - name: build
         run: nix build .#torana -L
